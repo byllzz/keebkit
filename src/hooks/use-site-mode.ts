@@ -12,9 +12,7 @@ export function useSiteMode(): UseSiteModeResult {
     if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem("keyb-site-mode") as SiteMode | null;
     if (saved) return saved;
-    return window.matchMedia?.("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   });
 
   useEffect(() => {
