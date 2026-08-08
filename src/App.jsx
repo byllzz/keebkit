@@ -79,7 +79,7 @@ export default function App() {
       <header className="sticky top-0 z-20 backdrop-blur bg-[var(--bg)]/80 border-b border-[var(--border-soft)]">
         <div className="max-w-4xl mx-auto flex items-center justify-between px-6 h-14">
           <span className="font-display font-semibold tracking-tight text-[15px]">
-keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
+            keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
           </span>
           <div className="flex items-center gap-4">
             <button
@@ -94,7 +94,7 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
               target="_blank"
               className="flex items-center gap-1.5 text-[13px] text-[var(--text-dim)] hover:text-[var(--text)] transition-colors"
             >
-              <GithubMark /> GitHub
+              <GithubMark /> <span className="relative top-0.5">GitHub</span>
             </a>
           </div>
         </div>
@@ -106,8 +106,8 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
             A keyboard, rebuilt for the web.
           </h1>
           <p className="mt-4 text-[16px] text-[var(--text-dim)] max-w-lg mx-auto">
-            A keyboard component with haptics, mechanical
-            sound, and six colorways. Drop it into any React project.
+            A keyboard component with haptics, mechanical sound, and six
+            colorways. Drop it into any React project.
           </p>
         </section>
 
@@ -131,7 +131,10 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
               />
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
-                style={{ background: "linear-gradient(to bottom, transparent, var(--panel))" }}
+                style={{
+                  background:
+                    "linear-gradient(to bottom, transparent, var(--panel))",
+                }}
               />
             </div>
           </div>
@@ -147,7 +150,8 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
 
         <Section title="Event callback usage" number="03">
           <p className="text-[var(--text-dim)] text-[14px] mb-3">
-            Listen to every key down and up, whether it came from the physical keyboard or an on-screen click.
+            Listen to every key down and up, whether it came from the physical
+            keyboard or an on-screen click.
           </p>
           <CodeBlock code={EVENT_CODE} />
         </Section>
@@ -165,11 +169,24 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
               </thead>
               <tbody>
                 {API_ROWS.map((row, i) => (
-                  <tr key={row.prop} className={i !== 0 ? "border-t border-[var(--border-soft)]" : ""}>
-                    <td className="px-4 py-3 font-mono-key text-[#c7b3ff] align-top whitespace-nowrap">{row.prop}</td>
-                    <td className="px-4 py-3 font-mono-key text-[var(--text-mute)] align-top">{row.type}</td>
-                    <td className="px-4 py-3 font-mono-key text-[var(--text-mute)] align-top whitespace-nowrap">{row.def}</td>
-                    <td className="px-4 py-3 text-[var(--text-dim)] align-top">{row.desc}</td>
+                  <tr
+                    key={row.prop}
+                    className={
+                      i !== 0 ? "border-t border-[var(--border-soft)]" : ""
+                    }
+                  >
+                    <td className="px-4 py-3 font-mono-key text-[#c7b3ff] align-top whitespace-nowrap">
+                      {row.prop}
+                    </td>
+                    <td className="px-4 py-3 font-mono-key text-[var(--text-mute)] align-top">
+                      {row.type}
+                    </td>
+                    <td className="px-4 py-3 font-mono-key text-[var(--text-mute)] align-top whitespace-nowrap">
+                      {row.def}
+                    </td>
+                    <td className="px-4 py-3 text-[var(--text-dim)] align-top">
+                      {row.desc}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -179,7 +196,10 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
       </main>
 
       <footer className="border-t border-[var(--border-soft)] py-8 text-center text-[12px] text-[var(--text-faint)]">
-        keebkit - made by <a href="https://github.com/byllzz" target="_blank">@byllzz</a>
+        keebkit - made by{" "}
+        <a href="https://github.com/byllzz" target="_blank">
+          @byllzz
+        </a>
       </footer>
     </div>
   );
