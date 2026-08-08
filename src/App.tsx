@@ -1,23 +1,47 @@
-import React, { useState, useCallback } from "react";
+import { useState, useEffect, type ReactNode, type SVGProps } from "react";
 import { useNavigate } from "react-router-dom";
-import Keyboard, { KEYBOARD_THEMES } from "./components/ui/keyboard";
+import Keyboard, { KEYBOARD_THEMES, type KeyboardTheme, type KeyboardLayout } from "./components/ui/keyboard";
 import { CodeBlock, PackageManagerTabs } from "./components/ui/code-block";
 import { FORMAT_SOURCES } from "./lib/format-sources";
 import { useSiteMode } from "./hooks/use-site-mode";
 import { Sun, Moon, Download, Terminal, FileCode, Maximize2 } from "lucide-react";
-function GithubMark(props) {
+
+function GithubMark(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" {...props}>
-      <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.09 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.56-.29-5.25-1.28-5.25-5.71 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.24 2.76.12 3.05.74.8 1.18 1.83 1.18 3.09 0 4.44-2.7 5.42-5.27 5.7.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5Z" />
+    <svg
+      width="12"
+      height="12"
+      fill="currentColor"
+      {...props}
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g
+        id="SVGRepo_tracerCarrier"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></g>
+      <g id="SVGRepo_iconCarrier">
+        {" "}
+        <path
+          d="M4.0744 2.9938C4.13263 1.96371 4.37869 1.51577 5.08432 1.15606C5.84357 0.768899 7.04106 0.949072 8.45014 1.66261C9.05706 1.97009 9.11886 1.97635 10.1825 1.83998C11.5963 1.65865 13.4164 1.65929 14.7213 1.84164C15.7081 1.97954 15.7729 1.97265 16.3813 1.66453C18.3814 0.651679 19.9605 0.71795 20.5323 1.8387C20.8177 2.39812 20.8707 3.84971 20.6494 5.04695C20.5267 5.71069 20.5397 5.79356 20.8353 6.22912C22.915 9.29385 21.4165 14.2616 17.8528 16.1155C17.5801 16.2574 17.3503 16.3452 17.163 16.4167C16.5879 16.6363 16.4133 16.703 16.6247 17.7138C16.7265 18.2 16.8491 19.4088 16.8973 20.4002C16.9844 22.1922 16.9831 22.2047 16.6688 22.5703C16.241 23.0676 15.6244 23.076 15.2066 22.5902C14.9341 22.2734 14.9075 22.1238 14.9075 20.9015C14.9075 19.0952 14.7095 17.8946 14.2417 16.8658C13.6854 15.6415 14.0978 15.185 15.37 14.9114C17.1383 14.531 18.5194 13.4397 19.2892 11.8146C20.0211 10.2698 20.1314 8.13501 18.8082 6.83668C18.4319 6.3895 18.4057 5.98446 18.6744 4.76309C18.7748 4.3066 18.859 3.71768 18.8615 3.45425C18.8653 3.03823 18.8274 2.97541 18.5719 2.97541C18.4102 2.97541 17.7924 3.21062 17.1992 3.49805L16.2524 3.95695C16.1663 3.99866 16.07 4.0147 15.975 4.0038C13.5675 3.72746 11.2799 3.72319 8.86062 4.00488C8.76526 4.01598 8.66853 3.99994 8.58215 3.95802L7.63585 3.49882C7.04259 3.21087 6.42482 2.97541 6.26317 2.97541C5.88941 2.97541 5.88379 3.25135 6.22447 4.89078C6.43258 5.89203 6.57262 6.11513 5.97101 6.91572C5.06925 8.11576 4.844 9.60592 5.32757 11.1716C5.93704 13.1446 7.4295 14.4775 9.52773 14.9222C10.7926 15.1903 11.1232 15.5401 10.6402 16.9905C10.26 18.1319 10.0196 18.4261 9.46707 18.4261C8.72365 18.4261 8.25796 17.7821 8.51424 17.1082C8.62712 16.8112 8.59354 16.7795 7.89711 16.5255C5.77117 15.7504 4.14514 14.0131 3.40172 11.7223C2.82711 9.95184 3.07994 7.64739 4.00175 6.25453C4.31561 5.78028 4.32047 5.74006 4.174 4.83217C4.09113 4.31822 4.04631 3.49103 4.0744 2.9938Z"
+          fill="currentColor"
+        ></path>{" "}
+        <path
+          d="M3.33203 15.9454C3.02568 15.4859 2.40481 15.3617 1.94528 15.6681C1.48576 15.9744 1.36158 16.5953 1.66793 17.0548C1.8941 17.3941 2.16467 17.6728 2.39444 17.9025C2.4368 17.9449 2.47796 17.9858 2.51815 18.0257C2.71062 18.2169 2.88056 18.3857 3.05124 18.5861C3.42875 19.0292 3.80536 19.626 4.0194 20.6962C4.11474 21.1729 4.45739 21.4297 4.64725 21.5419C4.85315 21.6635 5.07812 21.7352 5.26325 21.7819C5.64196 21.8774 6.10169 21.927 6.53799 21.9559C7.01695 21.9877 7.53592 21.998 7.99999 22.0008C8.00033 22.5527 8.44791 23.0001 8.99998 23.0001C9.55227 23.0001 9.99998 22.5524 9.99998 22.0001V21.0001C9.99998 20.4478 9.55227 20.0001 8.99998 20.0001C8.90571 20.0001 8.80372 20.0004 8.69569 20.0008C8.10883 20.0026 7.34388 20.0049 6.67018 19.9603C6.34531 19.9388 6.07825 19.9083 5.88241 19.871C5.58083 18.6871 5.09362 17.8994 4.57373 17.2891C4.34391 17.0194 4.10593 16.7834 3.91236 16.5914C3.87612 16.5555 3.84144 16.5211 3.80865 16.4883C3.5853 16.265 3.4392 16.1062 3.33203 15.9454Z"
+          fill="currentColor"
+        ></path>{" "}
+      </g>
     </svg>
   );
 }
 
-const THEME_LABELS = {
+const THEME_LABELS: Record<KeyboardTheme, string> = {
   classic: "Classic", mint: "Mint", royal: "Royal",
   dolch: "Dolch", sand: "Sand", scarlet: "Scarlet",
 };
-const THEME_ACCENTS = {
+const THEME_ACCENTS: Record<KeyboardTheme, string> = {
   classic: "#9b72ff", mint: "#37b787", royal: "#5b5fef",
   dolch: "#c98a3f", sand: "#c9a227", scarlet: "#d43b34",
 };
@@ -47,7 +71,14 @@ export default function Page() {
   );
 }`;
 
-const API_ROWS = [
+interface ApiRow {
+  prop: string;
+  type: string;
+  def: string;
+  desc: string;
+}
+
+const API_ROWS: ApiRow[] = [
   { prop: "theme", type: '"classic" | "mint" | "royal" | "dolch" | "sand" | "scarlet"', def: '"classic"', desc: "Selects one of the six built-in colorways." },
   { prop: "layout", type: '"qwerty" | "azerty" | "dvorak"', def: '"qwerty"', desc: "Remaps letter and symbol keys to the chosen layout." },
   { prop: "enableHaptics", type: "boolean", def: "true", desc: "Vibrates on supported devices when a key is pressed." },
@@ -57,22 +88,32 @@ const API_ROWS = [
   { prop: "className", type: "string", def: "undefined", desc: "Extra classes applied to the keyboard frame." },
 ];
 
+const LAYOUT_CYCLE: KeyboardLayout[] = ["qwerty", "azerty", "dvorak"];
+
 export default function App() {
   const navigate = useNavigate();
   const { mode, toggle } = useSiteMode();
-  const [theme, setTheme] = useState("classic");
-  const [layout, setLayout] = useState("qwerty");
-  const [lastKey, setLastKey] = useState(null);
-
-  const handleKeyEvent = useCallback((e) => {
-    if (e.phase === "down") {
-      setLastKey({ code: e.code, id: `${e.code}-${performance.now()}` });
-    }
-  }, []);
+  const [theme] = useState<KeyboardTheme>("classic");
+  const [previewTheme, setPreviewTheme] = useState<KeyboardTheme>("classic");
+  const [previewLayout, setPreviewLayout] = useState<KeyboardLayout>("qwerty");
 
   const openFullKeyboard = () => {
     navigate("/keyboard");
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPreviewTheme((prev) => {
+        const idx = KEYBOARD_THEMES.indexOf(prev);
+        return KEYBOARD_THEMES[(idx + 1) % KEYBOARD_THEMES.length];
+      });
+      setPreviewLayout((prev) => {
+        const idx = LAYOUT_CYCLE.indexOf(prev);
+        return LAYOUT_CYCLE[(idx + 1) % LAYOUT_CYCLE.length];
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[var(--bg)]">
@@ -92,7 +133,8 @@ export default function App() {
             <a
               href="https://github.com/byllzz/keebkit.git"
               target="_blank"
-              className="flex items-center gap-1.5 text-[13px] text-[var(--text-dim)] hover:text-[var(--text)] transition-colors"
+              rel="noreferrer"
+              className="flex items-center gap-0.5 text-[13px] text-[var(--text-dim)] hover:text-[var(--text)] transition-colors"
             >
               <GithubMark /> <span className="relative top-0.5">GitHub</span>
             </a>
@@ -112,9 +154,21 @@ export default function App() {
         </section>
 
         <section className="mb-24">
-          <div className="relative rounded-2xl border border-[var(--border)] bg-[var(--panel)] p-8 sm:p-12">
+          <div
+            onClick={openFullKeyboard}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") openFullKeyboard();
+            }}
+            aria-label="Open full keyboard in a new page"
+            className="group relative rounded-2xl border border-[var(--border)] bg-[var(--panel)] p-8 sm:p-12 cursor-pointer transition-colors hover:border-[var(--text-faint)]"
+          >
             <button
-              onClick={openFullKeyboard}
+              onClick={(e) => {
+                e.stopPropagation();
+                openFullKeyboard();
+              }}
               aria-label="Open full keyboard in a new page"
               title="Maximize"
               className="absolute top-4 right-4 z-10 p-1.5 rounded-md text-[var(--text-mute)] hover:text-[var(--text)] hover:bg-[var(--panel-2)] transition-colors"
@@ -123,11 +177,11 @@ export default function App() {
             </button>
             <div className="relative flex justify-center overflow-hidden max-h-[150px] sm:max-h-[170px]">
               <Keyboard
-                theme={theme}
-                layout={layout}
-                enableSound
-                enableHaptics
-                onKeyEvent={handleKeyEvent}
+                theme={previewTheme}
+                layout={previewLayout}
+                enableSound={false}
+                enableHaptics={false}
+                className="transition-colors duration-700"
               />
               <div
                 className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
@@ -175,7 +229,7 @@ export default function App() {
                       i !== 0 ? "border-t border-[var(--border-soft)]" : ""
                     }
                   >
-                    <td className="px-4 py-3 font-mono-key text-[#c7b3ff] align-top whitespace-nowrap">
+                    <td className="px-4 py-3 font-mono-key text-[#9B26FF] align-top whitespace-nowrap">
                       {row.prop}
                     </td>
                     <td className="px-4 py-3 font-mono-key text-[var(--text-mute)] align-top">
@@ -197,7 +251,11 @@ export default function App() {
 
       <footer className="border-t border-[var(--border-soft)] py-8 text-center text-[12px] text-[var(--text-faint)]">
         keebkit - made by{" "}
-        <a href="https://github.com/byllzz" target="_blank">
+        <a
+          href="https://github.com/byllzz"
+          className="text-[#9B26FF]"
+          target="_blank"
+        >
           @byllzz
         </a>
       </footer>
@@ -205,7 +263,13 @@ export default function App() {
   );
 }
 
-function Section({ title, number, children }) {
+interface SectionProps {
+  title: string;
+  number: string;
+  children: ReactNode;
+}
+
+function Section({ title, number, children }: SectionProps) {
   return (
     <section className="mb-16">
       <div className="flex items-baseline gap-3 mb-5">
@@ -217,16 +281,18 @@ function Section({ title, number, children }) {
   );
 }
 
-const FORMAT_TABS = [
+type FormatId = "jsx" | "tsx" | "html" | "js";
+
+const FORMAT_TABS: { id: FormatId; label: string }[] = [
   { id: "jsx", label: "JSX" },
   { id: "tsx", label: "TSX" },
   { id: "html", label: "HTML" },
   { id: "js", label: "JS" },
 ];
 
-function InstallTabs({ theme }) {
-  const [mode, setMode] = useState("cli");
-  const [format, setFormat] = useState("jsx");
+function InstallTabs({ theme }: { theme: KeyboardTheme }) {
+  const [mode, setMode] = useState<"cli" | "manual">("cli");
+  const [format, setFormat] = useState<FormatId>("jsx");
 
   return (
     <div>
@@ -296,7 +362,7 @@ function InstallTabs({ theme }) {
   );
 }
 
-function SoundStep({ theme }) {
+function SoundStep({ theme }: { theme: KeyboardTheme }) {
   return (
     <>
       <p className="text-[var(--text-dim)] text-[14px] mt-8 mb-3">

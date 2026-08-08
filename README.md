@@ -4,7 +4,6 @@
   </a>
 </p>
 
-
 # keebkit
 
 A keyboard component for React, with haptics, mechanical sound effects, six colorways, and three layouts (QWERTY / AZERTY / Dvorak). Ships as a real shadcn registry item so it can be installed straight into any project.
@@ -64,7 +63,6 @@ Deployed on Vercel. Push to your repo and import it in the Vercel dashboard - no
 
 If you enjoyed this project, consider giving it a ⭐ on GitHub. It helps others discover the project and motivates future improvements.
 
-
 # License (MIT)
 
 This project is licensed under the MIT License.
@@ -94,6 +92,3 @@ SOFTWARE.
 ```
 Made by [@byllzz](https://github.com/byllzz)
 
-<p align="right">
-  <a href="#keebkit">⬆ Back to Top</a>
-</p>

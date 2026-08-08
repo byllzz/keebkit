@@ -1,36 +1,38 @@
-import React, { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Sun, Moon, Keyboard as KeyboardIcon, Eraser } from "lucide-react";
-import Keyboard, { KEYBOARD_THEMES } from "./ui/keyboard";
-import LastKey from "./ui/last-key";
+import Keyboard, { KEYBOARD_THEMES, type KeyboardTheme, type KeyboardLayout, type KeyboardInteractionEvent } from "./ui/keyboard";
+import LastKey, { type LastKeyEvent } from "./ui/last-key";
 import { useSiteMode } from "../hooks/use-site-mode";
 
-const THEME_LABELS = {
+const THEME_LABELS: Record<KeyboardTheme, string> = {
   classic: "Classic", mint: "Mint", royal: "Royal",
   dolch: "Dolch", sand: "Sand", scarlet: "Scarlet",
 };
-const THEME_ACCENTS = {
+const THEME_ACCENTS: Record<KeyboardTheme, string> = {
   classic: "#9b72ff", mint: "#37b787", royal: "#5b5fef",
   dolch: "#c98a3f", sand: "#c9a227", scarlet: "#d43b34",
 };
 
+const LAYOUTS: KeyboardLayout[] = ["qwerty", "azerty", "dvorak"];
+
 // Minimal QWERTY char map for the typing-test box. Only used to render
 // what a click/keypress "would type" - it intentionally ignores the
 // azerty/dvorak remaps used by the visual keyboard for simplicity.
-const SHIFT_MAP = {
+const SHIFT_MAP: Record<string, string> = {
   Backquote: "~", Digit1: "!", Digit2: "@", Digit3: "#", Digit4: "$", Digit5: "%",
   Digit6: "^", Digit7: "&", Digit8: "*", Digit9: "(", Digit0: ")",
   Minus: "_", Equal: "+", BracketLeft: "{", BracketRight: "}", Backslash: "|",
   Semicolon: ":", Quote: "\"", Comma: "<", Period: ">", Slash: "?",
 };
-const BASE_MAP = {
+const BASE_MAP: Record<string, string> = {
   Backquote: "`", Digit1: "1", Digit2: "2", Digit3: "3", Digit4: "4", Digit5: "5",
   Digit6: "6", Digit7: "7", Digit8: "8", Digit9: "9", Digit0: "0",
   Minus: "-", Equal: "=", BracketLeft: "[", BracketRight: "]", Backslash: "\\",
   Semicolon: ";", Quote: "'", Comma: ",", Period: ".", Slash: "/",
 };
 
-function charForCode(code, shift) {
+function charForCode(code: string, shift: boolean): string | null {
   if (code.startsWith("Key")) {
     const letter = code.slice(3);
     return shift ? letter : letter.toLowerCase();
@@ -45,15 +47,15 @@ function charForCode(code, shift) {
 export default function FullKeyboardPage() {
   const navigate = useNavigate();
   const { mode, toggle } = useSiteMode();
-  const [theme, setTheme] = useState("classic");
-  const [layout, setLayout] = useState("qwerty");
-  const [lastKey, setLastKey] = useState(null);
+  const [theme, setTheme] = useState<KeyboardTheme>("classic");
+  const [layout, setLayout] = useState<KeyboardLayout>("qwerty");
+  const [lastKey, setLastKey] = useState<LastKeyEvent | null>(null);
   const [showTypingTest, setShowTypingTest] = useState(false);
   const [typedText, setTypedText] = useState("");
   const shiftHeldRef = useRef(false);
   const showTypingTestRef = useRef(false);
 
-  const handleKeyEvent = useCallback((e) => {
+  const handleKeyEvent = useCallback((e: KeyboardInteractionEvent) => {
     if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
       shiftHeldRef.current = e.phase === "down";
     }
@@ -88,7 +90,7 @@ export default function FullKeyboardPage() {
   return (
     <div className="min-h-screen bg-[var(--bg)] flex flex-col">
       <header className="sticky top-0 z-20 backdrop-blur bg-[var(--bg)]/80 border-b border-[var(--border-soft)]">
-        <div className="max-w-3xl mx-auto flex items-center justify-between px-6 h-14">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 h-14">
           <button
             onClick={goBack}
             className="flex items-center gap-1.5 text-[13px] text-[var(--text-dim)] hover:text-[var(--text)] transition-colors"
@@ -141,7 +143,7 @@ export default function FullKeyboardPage() {
                 onClick={() => setTypedText("")}
                 aria-label="Clear typed text"
                 title="Clear"
-                className="absolute top-2 right-2! p-1 rounded-md text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--panel-2)] transition-colors"
+                className="absolute top-2 right-2 p-1 rounded-md text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--panel-2)] transition-colors"
               >
                 <Eraser size={13} />
               </button>
@@ -175,7 +177,7 @@ export default function FullKeyboardPage() {
         </div>
 
         <div className="flex justify-center gap-1.5 mt-2">
-          {["qwerty", "azerty", "dvorak"].map((id) => (
+          {LAYOUTS.map((id) => (
             <button
               key={id}
               onClick={() => setLayout(id)}

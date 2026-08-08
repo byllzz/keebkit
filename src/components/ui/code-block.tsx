@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
@@ -27,7 +27,12 @@ const editorTheme = {
   },
 };
 
-export function CodeBlock({ code, language = "jsx" }) {
+export interface CodeBlockProps {
+  code: string;
+  language?: string;
+}
+
+export function CodeBlock({ code, language = "jsx" }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(code);
@@ -65,16 +70,26 @@ export function CodeBlock({ code, language = "jsx" }) {
   );
 }
 
-const MANAGERS = [
+interface PackageManager {
+  id: string;
+  label: string;
+  cmd: (c: string) => string;
+}
+
+const MANAGERS: PackageManager[] = [
   { id: "pnpm", label: "pnpm", cmd: (c) => `pnpm dlx ${c}` },
   { id: "yarn", label: "yarn", cmd: (c) => `yarn dlx ${c}` },
   { id: "npm", label: "npm", cmd: (c) => `npx ${c}` },
   { id: "bun", label: "bun", cmd: (c) => `bunx --bun ${c}` },
 ];
 
-export function PackageManagerTabs({ registryCommand }) {
-  const [active, setActive] = useState("pnpm");
-  const manager = MANAGERS.find((m) => m.id === active);
+export interface PackageManagerTabsProps {
+  registryCommand: string;
+}
+
+export function PackageManagerTabs({ registryCommand }: PackageManagerTabsProps) {
+  const [active, setActive] = useState<string>("pnpm");
+  const manager = MANAGERS.find((m) => m.id === active) ?? MANAGERS[0];
   const command = manager.cmd(registryCommand);
 
   return (
@@ -99,7 +114,7 @@ export function PackageManagerTabs({ registryCommand }) {
   );
 }
 
-function CommandLine({ command }) {
+function CommandLine({ command }: { command: string }) {
   const [copied, setCopied] = useState(false);
   const copy = () => {
     navigator.clipboard.writeText(command);

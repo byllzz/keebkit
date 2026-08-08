@@ -1,6 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 
-const CODE_TO_LABEL = {
+export interface LastKeyEvent {
+  code: string;
+  id: string;
+}
+
+interface DisplayState {
+  label: string;
+  id: string;
+}
+
+const CODE_TO_LABEL: Record<string, string> = {
   Space: "space", Enter: "enter", Backspace: "⌫", Tab: "tab",
   ShiftLeft: "shift", ShiftRight: "shift", ControlLeft: "ctrl",
   ControlRight: "ctrl", AltLeft: "alt", AltRight: "alt", Escape: "esc",
@@ -8,7 +18,7 @@ const CODE_TO_LABEL = {
   CapsLock: "caps",
 };
 
-function labelFor(code) {
+function labelFor(code: string | undefined): string {
   if (!code) return "";
   if (CODE_TO_LABEL[code]) return CODE_TO_LABEL[code];
   if (code.startsWith("Key")) return code.slice(3);
@@ -17,9 +27,14 @@ function labelFor(code) {
   return code;
 }
 
-export default function LastKey({ lastKey, accent = "#9b72ff" }) {
-  const [display, setDisplay] = useState(null);
-  const timerRef = useRef(null);
+export interface LastKeyProps {
+  lastKey: LastKeyEvent | null;
+  accent?: string;
+}
+
+export default function LastKey({ lastKey, accent = "#9b72ff" }: LastKeyProps) {
+  const [display, setDisplay] = useState<DisplayState | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (!lastKey) return;
