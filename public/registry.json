@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "keebkit",
+  "homepage": "https://keebkit.vercel.app",
+  "items": [
+    {
+      "name": "keyboard",
+      "type": "registry:component",
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "title": "Keyboard",
+      "description": "A keyboard component with haptics and mechanical sound effects.",
+      "dependencies": ["lucide-react"],
+      "files": [
+        {
+          "path": "registry/keyboard.jsx",
+          "type": "registry:component",
+          "target": "components/ui/keyboard.jsx"
+        }
+      ]
+    }
+  ]
+}

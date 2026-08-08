@@ -1,0 +1,199 @@
+import React, { useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Sun, Moon, Keyboard as KeyboardIcon, Eraser } from "lucide-react";
+import Keyboard, { KEYBOARD_THEMES } from "./ui/keyboard";
+import LastKey from "./ui/last-key";
+import { useSiteMode } from "../hooks/use-site-mode";
+
+const THEME_LABELS = {
+  classic: "Classic", mint: "Mint", royal: "Royal",
+  dolch: "Dolch", sand: "Sand", scarlet: "Scarlet",
+};
+const THEME_ACCENTS = {
+  classic: "#9b72ff", mint: "#37b787", royal: "#5b5fef",
+  dolch: "#c98a3f", sand: "#c9a227", scarlet: "#d43b34",
+};
+
+// Minimal QWERTY char map for the typing-test box. Only used to render
+// what a click/keypress "would type" - it intentionally ignores the
+// azerty/dvorak remaps used by the visual keyboard for simplicity.
+const SHIFT_MAP = {
+  Backquote: "~", Digit1: "!", Digit2: "@", Digit3: "#", Digit4: "$", Digit5: "%",
+  Digit6: "^", Digit7: "&", Digit8: "*", Digit9: "(", Digit0: ")",
+  Minus: "_", Equal: "+", BracketLeft: "{", BracketRight: "}", Backslash: "|",
+  Semicolon: ":", Quote: "\"", Comma: "<", Period: ">", Slash: "?",
+};
+const BASE_MAP = {
+  Backquote: "`", Digit1: "1", Digit2: "2", Digit3: "3", Digit4: "4", Digit5: "5",
+  Digit6: "6", Digit7: "7", Digit8: "8", Digit9: "9", Digit0: "0",
+  Minus: "-", Equal: "=", BracketLeft: "[", BracketRight: "]", Backslash: "\\",
+  Semicolon: ";", Quote: "'", Comma: ",", Period: ".", Slash: "/",
+};
+
+function charForCode(code, shift) {
+  if (code.startsWith("Key")) {
+    const letter = code.slice(3);
+    return shift ? letter : letter.toLowerCase();
+  }
+  if (code === "Space") return " ";
+  if (code in SHIFT_MAP || code in BASE_MAP) {
+    return shift ? SHIFT_MAP[code] : BASE_MAP[code];
+  }
+  return null;
+}
+
+export default function FullKeyboardPage() {
+  const navigate = useNavigate();
+  const { mode, toggle } = useSiteMode();
+  const [theme, setTheme] = useState("classic");
+  const [layout, setLayout] = useState("qwerty");
+  const [lastKey, setLastKey] = useState(null);
+  const [showTypingTest, setShowTypingTest] = useState(false);
+  const [typedText, setTypedText] = useState("");
+  const shiftHeldRef = useRef(false);
+  const showTypingTestRef = useRef(false);
+
+  const handleKeyEvent = useCallback((e) => {
+    if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+      shiftHeldRef.current = e.phase === "down";
+    }
+
+    if (e.phase !== "down") return;
+
+    setLastKey({ code: e.code, id: `${e.code}-${performance.now()}` });
+
+    if (!showTypingTestRef.current) return;
+
+    if (e.code === "Backspace") {
+      setTypedText((t) => t.slice(0, -1));
+    } else if (e.code === "Enter") {
+      setTypedText((t) => t + "\n");
+    } else if (e.code === "Tab") {
+      setTypedText((t) => t + "\t");
+    } else {
+      const char = charForCode(e.code, shiftHeldRef.current);
+      if (char) setTypedText((t) => t + char);
+    }
+  }, []);
+
+  const toggleTypingTest = () => {
+    setShowTypingTest((v) => {
+      showTypingTestRef.current = !v;
+      return !v;
+    });
+  };
+
+  const goBack = () => navigate("/");
+
+  return (
+    <div className="min-h-screen bg-[var(--bg)] flex flex-col">
+      <header className="sticky top-0 z-20 backdrop-blur bg-[var(--bg)]/80 border-b border-[var(--border-soft)]">
+        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 h-14">
+          <button
+            onClick={goBack}
+            className="flex items-center gap-1.5 text-[13px] text-[var(--text-dim)] hover:text-[var(--text)] transition-colors"
+          >
+            <ArrowLeft size={15} /> Back
+          </button>
+          <span className="font-display font-semibold tracking-tight text-[15px]">
+            keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
+          </span>
+          <button
+            onClick={toggle}
+            aria-label="Toggle light and dark mode"
+            className="p-1.5 rounded-md text-[var(--text-mute)] hover:text-[var(--text)] hover:bg-[var(--panel-2)] transition-colors"
+          >
+            {mode === "light" ? <Moon size={15} /> : <Sun size={15} />}
+          </button>
+        </div>
+      </header>
+
+      <main className="flex-1 flex flex-col items-center justify-center px-6 py-10">
+        <LastKey lastKey={lastKey} accent={THEME_ACCENTS[theme]} />
+
+        <div className="w-full overflow-x-auto flex justify-center py-6">
+          <Keyboard
+            theme={theme}
+            layout={layout}
+            enableSound
+            enableHaptics
+            onKeyEvent={handleKeyEvent}
+          />
+        </div>
+
+        <button
+          onClick={toggleTypingTest}
+          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-all mt-2 ${
+            showTypingTest
+              ? "text-white shadow-sm"
+              : "text-[var(--text-dim)] bg-[var(--panel-2)] hover:bg-[var(--border)]"
+          }`}
+          style={showTypingTest ? { background: THEME_ACCENTS[theme] } : undefined}
+        >
+          <KeyboardIcon size={13} />
+          {showTypingTest ? "Hide typing test" : "Try typing test"}
+        </button>
+
+        {showTypingTest && (
+          <div className="w-full max-w-xl mt-4">
+            <div className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4 min-h-[100px] relative">
+              <button
+                onClick={() => setTypedText("")}
+                aria-label="Clear typed text"
+                title="Clear"
+                className="absolute top-2 right-2! p-1 rounded-md text-[var(--text-faint)] hover:text-[var(--text)] hover:bg-[var(--panel-2)] transition-colors"
+              >
+                <Eraser size={13} />
+              </button>
+              <pre className="whitespace-pre-wrap break-words font-mono-key text-[13px] text-[var(--text)] pr-6">
+                {typedText || (
+                  <span className="text-[var(--text-faint)]">
+                    Type on your physical keyboard, or click the on-screen keys - it&apos;ll show up here.
+                  </span>
+                )}
+                <span className="inline-block w-[2px] h-[14px] bg-[var(--text-mute)] align-middle ml-[1px] animate-pulse" />
+              </pre>
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-wrap justify-center gap-1.5 mt-6">
+          {KEYBOARD_THEMES.map((id) => (
+            <button
+              key={id}
+              onClick={() => setTheme(id)}
+              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-all ${
+                theme === id
+                  ? "text-white shadow-sm"
+                  : "text-[var(--text-dim)] bg-[var(--panel-2)] hover:bg-[var(--border)]"
+              }`}
+              style={theme === id ? { background: THEME_ACCENTS[id] } : undefined}
+            >
+              {THEME_LABELS[id]}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex justify-center gap-1.5 mt-2">
+          {["qwerty", "azerty", "dvorak"].map((id) => (
+            <button
+              key={id}
+              onClick={() => setLayout(id)}
+              className={`px-3 py-1 rounded-full text-[11px] font-mono-key transition-colors ${
+                layout === id
+                  ? "text-[var(--text)] bg-[var(--border)]"
+                  : "text-[var(--text-mute)] hover:text-[var(--code-text)]"
+              }`}
+            >
+              {id}
+            </button>
+          ))}
+        </div>
+
+        <p className="text-center text-[12px] text-[var(--text-faint)] mt-6">
+          Type on your physical keyboard, or click the keys with your mouse - both are fully wired up.
+        </p>
+      </main>
+    </div>
+  );
+}
