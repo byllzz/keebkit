@@ -48,6 +48,10 @@ body {
   font-family: "JetBrains Mono", ui-monospace, monospace;
 }
 
+button{
+  cursor: pointer;
+}
+
 ::selection {
   background: #9b72ff;
   color: #fff;

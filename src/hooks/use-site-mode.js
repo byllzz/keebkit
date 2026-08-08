@@ -2,10 +2,9 @@ import { useEffect, useState } from "react";
 
 export function useSiteMode() {
   const [mode, setMode] = useState(() => {
-    if (typeof window === "undefined") return "dark";
+    if (typeof window === "undefined") return "light";
     const saved = localStorage.getItem("keyb-site-mode");
-    if (saved) return saved;
-    return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    return saved || "light"; // default to light
   });
 
   useEffect(() => {

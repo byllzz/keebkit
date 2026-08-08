@@ -88,7 +88,7 @@ export default function FullKeyboardPage() {
   return (
     <div className="min-h-screen bg-[var(--bg)] flex flex-col">
       <header className="sticky top-0 z-20 backdrop-blur bg-[var(--bg)]/80 border-b border-[var(--border-soft)]">
-        <div className="max-w-6xl mx-auto flex items-center justify-between px-6 h-14">
+        <div className="max-w-3xl mx-auto flex items-center justify-between px-6 h-14">
           <button
             onClick={goBack}
             className="flex items-center gap-1.5 text-[13px] text-[var(--text-dim)] hover:text-[var(--text)] transition-colors"
