@@ -121,14 +121,17 @@ keebkit<span style={{ color: THEME_ACCENTS[theme] }}>.</span>
             >
               <Maximize2 size={15} />
             </button>
-            <div className="overflow-hidden" style={{ width: "560px", maxWidth: "100%" }}>
+            <div className="relative flex justify-center overflow-hidden max-h-[150px] sm:max-h-[170px]">
               <Keyboard
                 theme={theme}
                 layout={layout}
-                align="start"
                 enableSound
                 enableHaptics
                 onKeyEvent={handleKeyEvent}
+              />
+              <div
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-16"
+                style={{ background: "linear-gradient(to bottom, transparent, var(--panel))" }}
               />
             </div>
           </div>
